@@ -8,27 +8,14 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
     [RequireComponent(typeof(TMP_Text))]
     public class InteractiveTMPText : InteractiveTextScript
     {
-        [SerializeField] private List<TMP_Text> _textElements;
-
-        private void Reset()
-        {
-            _textElements = GetComponents<TMP_Text>().ToList();
-        }
+        private List<TMP_Text> _textElements;
 
         protected override void Start()
         {
+            _textElements = GetComponents<TMP_Text>().ToList();
+            Debug.Log(_textElements.Count);
             base.Start();
             UpdateData(_textElements.Select(x => x.text).ToList());
-        }
-
-        protected override void UpdateDefaultFont()
-        {
-            
-        }
-
-        protected override void UpdateFont()
-        {
-            //_textElements.font = _font;
         }
 
         protected override void SetText(string text, int index)

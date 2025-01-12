@@ -23,7 +23,6 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
 
         protected virtual void Start()
         {
-            UpdateDefaultFont();
             OnConfigLoaded();
             ConfigData.OnLoaded += OnConfigLoaded;
         }
@@ -39,20 +38,7 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
         /// Updates all the data
         public void UpdateData(List<string> text)
         {
-            UpdateFont();
             UpdateText(text);
-        }
-
-        /// Updates the default font by taking the current one, should be called in <see cref="Start"/>
-        protected virtual void UpdateDefaultFont()
-        {
-            throw new System.NotImplementedException("Derived class must implement UpdateDefaultFont.");
-        }
-
-        /// Updates the font for all text elements
-        protected virtual void UpdateFont()
-        {
-            throw new System.NotImplementedException("Derived class must implement UpdateFont.");
         }
 
         /// Handles text being changed

@@ -30,16 +30,6 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
             // Update all the label elements text
             UpdateData(_labels.Select(x => x.text).ToList());
         }
-        
-        protected override void UpdateDefaultFont()
-        {
-            
-        }
-
-        protected override void UpdateFont()
-        {
-            
-        }
 
         protected override void SetText(string text, int index)
         {
