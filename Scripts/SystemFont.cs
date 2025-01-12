@@ -1,6 +1,6 @@
 using TMPro;
 
-namespace NnUtils.TextUtils.Scripts
+namespace NnUtils.Modules.TextUtils.Scripts
 {
     // TODO: Add Windows and possibly OSX compatibility
     public static class SystemFont
