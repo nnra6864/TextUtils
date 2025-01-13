@@ -84,6 +84,7 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
                 // Store the start time
                 var startTime = Time.realtimeSinceStartup;
         
+                // TODO: Start another thread only if needed(usually for shell commands)
                 // Update the dynamic text value async
                 var task = Task.Run(() => dt.Func());
                 yield return new WaitUntil(() => task.IsCompleted);
