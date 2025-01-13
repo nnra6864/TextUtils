@@ -12,9 +12,17 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
 
         protected override void Start()
         {
-            _textElements = GetComponents<TMP_Text>().ToList();
+            // Run the base start
             base.Start();
+            
+            // Get all text elements
+            _textElements = GetComponents<TMP_Text>().ToList();
+            
+            // Update data
             UpdateData(_textElements.Select(x => x.text).ToList());
+
+            // Clear the text to avoid the flicker
+            _textElements.ForEach(x => x.text = "");
         }
 
         protected override void SetText(string text, int index)
