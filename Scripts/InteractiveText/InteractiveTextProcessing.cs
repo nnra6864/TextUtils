@@ -53,7 +53,6 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
         {
             try
             {
-                UnityEngine.Debug.Log(cmd);
                 // Start the shell process and pass args
                 using var process = new Process();
                 process.StartInfo = new()
