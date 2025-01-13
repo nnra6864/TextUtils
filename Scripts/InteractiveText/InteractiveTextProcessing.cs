@@ -15,8 +15,8 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
         private static GeneralConfigData _configData;
         private static GeneralConfigData ConfigData => _configData ??= (GeneralConfigData)GameManagerScript.ConfigScript.Data;
         
-        // Used to find custom properties within config text, e.g. {sh()}, thanks gpt/claude, I have 0 clue what's going on here o_0
-        private const string TextRegexString = @"\{(\w+)\((.*?)\\\)(?:,\s*(\d*\.?\d+))?\}";
+        // Used to find custom properties within config text, e.g. {sh(date), 0.1}, thanks Claude, I have 0 clue what's going on here o_0
+        private const string TextRegexString = @"\{(\w+)\(((?:[^()\\]|\\.|\((?:[^()\\]|\\.)*\))*)\)(?:,\s*(\d*\.?\d+))?\}"; 
         private static readonly Regex TextRegex = new(TextRegexString, RegexOptions.Compiled);
 
         /// Returns a list containing all the dynamic text instances
@@ -53,6 +53,7 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
         {
             try
             {
+                UnityEngine.Debug.Log(cmd);
                 // Start the shell process and pass args
                 using var process = new Process();
                 process.StartInfo = new()

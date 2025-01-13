@@ -13,7 +13,6 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
         protected override void Start()
         {
             _textElements = GetComponents<TMP_Text>().ToList();
-            Debug.Log(_textElements.Count);
             base.Start();
             UpdateData(_textElements.Select(x => x.text).ToList());
         }
