@@ -81,7 +81,9 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
                     RedirectStandardOutput = true,
                     RedirectStandardError  = true,
                     UseShellExecute        = false,
-                    CreateNoWindow         = true
+                    CreateNoWindow         = true,
+                    StandardOutputEncoding = System.Text.Encoding.UTF8,
+                    StandardErrorEncoding  = System.Text.Encoding.UTF8
                 };
 
                 // Start the process and get output and error

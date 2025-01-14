@@ -1,4 +1,7 @@
 using TMPro;
+using UnityEngine;
+using UnityEngine.TextCore.Text;
+using AtlasPopulationMode = TMPro.AtlasPopulationMode;
 
 namespace NnUtils.Modules.TextUtils.Scripts
 {
@@ -18,7 +21,7 @@ namespace NnUtils.Modules.TextUtils.Scripts
         /// <param name="fontPath">Path to a font</param>
         /// <returns><see cref="TMP_FontAsset"/> generated from a font</returns>
         public static TMP_FontAsset GenerateFontFromPath(string fontPath) => TMP_FontAsset.CreateFontAsset(new(fontPath));
-
+        
         /// <summary>
         /// Gets the name of a font located at <paramref name="fontPath"/>
         /// </summary>
