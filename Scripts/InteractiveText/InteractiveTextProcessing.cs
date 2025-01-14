@@ -17,7 +17,7 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
         
         // Used to find custom properties within config text, e.g. {sh(date), 0.1, true}, thanks Claude, I have 0 clue what's going on here o_0
         private const string TextRegexString =
-            @"\{(?:cmd:\s*)?(?<cmd>\w+)\((?<param>(?:[^()\\]|\\.|\((?:[^()\\]|\\.)*\))*)\)(?:,\s*(?:interval:\s*(?<interval>\d*\.?\d+)|async:\s*(?<async>true|false)))*\}";
+            @"\{\s*(?:cmd:\s*)?(?<cmd>\w+)\((?<param>(?:[^()\\]|\\.|\((?:[^()\\]|\\.)*\))*)\)(?:,\s*(?:interval:\s*(?<interval>\d*\.?\d+)|async:\s*(?<async>true|false)))*\s*\}";
         private static readonly Regex TextRegex = new(TextRegexString, RegexOptions.Compiled);
 
         /// Returns a list containing all the dynamic text instances
