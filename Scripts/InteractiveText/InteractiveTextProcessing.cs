@@ -9,7 +9,6 @@ using UnityEngine;
 
 namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
 {
-    // TODO: Implement correct regex for async detection, the rest is there
     public class InteractiveTextProcessing : MonoBehaviour
     {
         // General Config Data
