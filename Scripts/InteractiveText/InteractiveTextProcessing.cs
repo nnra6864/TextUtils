@@ -9,24 +9,35 @@ using UnityEngine;
 
 namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
 {
+    // TODO: Implement correct regex for async detection, the rest is there
     public class InteractiveTextProcessing : MonoBehaviour
     {
         // General Config Data
         private static GeneralConfigData _configData;
         private static GeneralConfigData ConfigData => _configData ??= (GeneralConfigData)GameManagerScript.ConfigScript.Data;
         
-        // Used to find custom properties within config text, e.g. {sh(date), 0.1}, thanks Claude, I have 0 clue what's going on here o_0
-        private const string TextRegexString = @"\{(\w+)\(((?:[^()\\]|\\.|\((?:[^()\\]|\\.)*\))*)\)(?:,\s*(\d*\.?\d+))?\}"; 
+        // Used to find custom properties within config text, e.g. {sh(date), 0.1, true}, thanks Claude, I have 0 clue what's going on here o_0
+        private const string TextRegexString =
+            @"\{(?:cmd:\s*)?(?<cmd>\w+)\((?<param>(?:[^()\\]|\\.|\((?:[^()\\]|\\.)*\))*)\)(?:,\s*(?:interval:\s*(?<interval>\d*\.?\d+)|async:\s*(?<async>true|false)))*\}";
         private static readonly Regex TextRegex = new(TextRegexString, RegexOptions.Compiled);
 
         /// Returns a list containing all the dynamic text instances
         public static List<DynamicText> GetDynamicText(string text) =>
-            TextRegex.Matches(text).Select(x => new DynamicText(
+            TextRegex.Matches(text).Select(x =>
+            {
+                var cmd = x.Groups["cmd"];
+                var param = x.Groups["param"];
+                var interval = x.Groups["interval"];
+                var async = x.Groups["async"];
+                
+                return new DynamicText(
                     text: "",
-                    func: GetFunc(x.Groups[1].Value, x.Groups[2].Value),
-                    interval: x.Groups[3].Success ? GetInterval(x.Groups[3].Value) : null))
-                .ToList();
-        
+                    func: GetFunc(cmd.Value, param.Value),
+                    interval: interval.Success ? GetInterval(interval.Value) : null,
+                    async: async.Success ? bool.Parse(async.Value) : GetCommandAsync(cmd.Value)
+                );
+            }).ToList();
+
         /// Returns a function based on cmd
         private static Func<string> GetFunc(string cmd, string param) =>
             cmd.ToLower() switch
@@ -38,11 +49,20 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
             };
 
         /// Returns the interval
-        private static float GetInterval(string interval)
+        private static float ?GetInterval(string interval)
         {
-            float.TryParse(interval, out var result);
-            return result;
+            var parsed = float.TryParse(interval, out var result);
+            return parsed ? result == 0 ? 0.01f : result : null;
         }
+
+        /// Returns whether a command is async by default
+        private static bool GetCommandAsync(string cmd) =>
+            cmd.ToLower() switch
+            {
+                // Only explicitly define async cmd, false is returned by default
+                "sh" => true,
+                _ => false
+            };
 
         /// Replaces all instances of dynamic text with proper values
         public static string ReplaceWithDynamicText(string text, Queue<DynamicText> dynamicText) =>

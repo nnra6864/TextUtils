@@ -21,6 +21,8 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
         /// Value represents the list of all the dynamic text instances found in that text element
         private readonly Dictionary<int, List<DynamicText>> _dynamicText = new();
 
+        private bool _canUpdate;
+        
         protected virtual void Start()
         {
             OnConfigLoaded();
@@ -44,6 +46,9 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
         /// Handles text being changed
         private void UpdateText(List<string> text)
         {
+            // Prevent too early updates
+            _canUpdate = false;
+            
             // Assign text elements
             _text = text;
 
@@ -69,6 +74,9 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
                 for (var o = 0; o < _dynamicText[i].Count; o++)
                     _updateDynamicTextRoutines.Add(StartCoroutine(UpdateDynamicTextRoutine(i, o)));
             }
+
+            // Allow updates once all the data is loaded
+            _canUpdate = true;
         }
 
         /// Stores all the update dynamic text routines
@@ -77,25 +85,31 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
         /// Updates an instance of dynamic text and triggers the text update
         private IEnumerator UpdateDynamicTextRoutine(int i, int o)
         {
+            // Wait till data is ready
+            yield return new WaitWhile(() => !_canUpdate);
+            
             var dt = _dynamicText[i][o];
         
             while (true)
             {
                 // Store the start time
                 var startTime = Time.realtimeSinceStartup;
-        
-                // TODO: Start another thread only if needed(usually for shell commands)
-                // Update the dynamic text value async
-                var task = Task.Run(() => dt.Func());
-                yield return new WaitUntil(() => task.IsCompleted);
-        
-                // If task finished running, run SetText()
-                if (task.Status == TaskStatus.RanToCompletion)
+
+                // Update dt
+                if (dt.Async)
                 {
-                    dt.Text = task.Result;
-                    SetText(InteractiveTextProcessing.ReplaceWithDynamicText(_text[i], new(_dynamicText[i])), i);
+                    var task = Task.Run(() => dt.Func());
+                    yield return new WaitUntil(() => task.IsCompleted);
+                    
+                    // If task finished running, run SetText()
+                    if (task.Status == TaskStatus.RanToCompletion) dt.Text = task.Result;
                 }
-        
+                else dt.Text = dt.Func();
+
+
+                // Set text
+                SetText(InteractiveTextProcessing.ReplaceWithDynamicText(_text[i], new(_dynamicText[i])), i);
+                
                 // Get interval and break if null
                 var interval = dt.Interval;
                 if (interval == null) yield break;
