@@ -1,20 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Config;
-using Core;
 using UnityEngine;
 
 namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
 {
     public class InteractiveTextScript : MonoBehaviour
     {
-        // General Config Data
-        private static GeneralConfigData _configData;
-        protected static GeneralConfigData ConfigData => _configData ??= (GeneralConfigData)GameManagerScript.ConfigScript.Data;
-
         /// Stores the unprocessed text
-        private List<string> _text = new();
+        protected List<string> _text = new();
 
         /// Stores dynamic text values <br/>
         /// Key represents the index of the text element that dynamic text is made from <br/>
@@ -25,23 +19,13 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
         
         protected virtual void Start()
         {
-            OnConfigLoaded();
-            ConfigData.OnLoaded += OnConfigLoaded;
+            UpdateData();
         }
-
-        private void OnDestroy()
-        {
-            ConfigData.OnLoaded -= OnConfigLoaded;
-        }
-
-        /// Gets called on <see cref="GeneralConfigData.OnLoaded"/>
-        public void OnConfigLoaded() => UpdateData(_text);
+        
+        // TODO: Call UpdateData when config loads
 
         /// Updates all the data
-        public void UpdateData(List<string> text)
-        {
-            UpdateText(text);
-        }
+        public void UpdateData() => UpdateText(_text);
 
         /// Handles text being changed
         private void UpdateText(List<string> text)

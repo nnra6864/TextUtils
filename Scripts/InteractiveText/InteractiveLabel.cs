@@ -28,7 +28,8 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
             base.Start();
             
             // Update all the label elements text
-            UpdateData(_labels.Select(x => x.text).ToList());
+            _text = _labels.Select(x => x.text).ToList();
+            UpdateData();
         }
 
         protected override void SetText(string text, int index)
