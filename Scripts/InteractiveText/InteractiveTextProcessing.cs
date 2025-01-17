@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Config;
-using Core;
 using UnityEngine;
 
 namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
@@ -12,8 +10,7 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
     public class InteractiveTextProcessing : MonoBehaviour
     {
         // General Config Data
-        private static GeneralConfigData _configData;
-        private static GeneralConfigData ConfigData => _configData ??= (GeneralConfigData)GameManagerScript.ConfigScript.Data;
+        public static string Shell = "/bin/bash";
         
         // Used to find custom properties within config text, e.g. {sh(date), 0.1, true}, thanks Claude, I have 0 clue what's going on here o_0
         private const string TextRegexString =
@@ -77,7 +74,7 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
                 using var process = new Process();
                 process.StartInfo = new()
                 {
-                    FileName               = ConfigData.Shell,
+                    FileName               = Shell,
                     Arguments              = $"-c \"{cmd}\"",
                     RedirectStandardOutput = true,
                     RedirectStandardError  = true,
