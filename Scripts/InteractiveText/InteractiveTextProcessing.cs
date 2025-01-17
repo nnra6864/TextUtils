@@ -20,6 +20,17 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
             @"\{\s*(?:cmd:\s*)?(?<cmd>\w+)\((?<param>(?:[^()\\]|\\.|\((?:[^()\\]|\\.)*\))*)\)(?:,\s*(?:interval:\s*(?<interval>\d*\.?\d+)|async:\s*(?<async>true|false)))*\s*\}";
         private static readonly Regex TextRegex = new(TextRegexString, RegexOptions.Compiled);
 
+        public static readonly Dictionary<string, Func<string, string>> Functions = new()
+        {
+            ["sh"] = ExecuteShellCommand,
+            ["dt"] = param => DateTime.Now.ToString(param)
+        };
+
+        public static readonly Dictionary<string, bool> AsyncFunctions = new()
+        {
+            { "sh", true }
+        };
+
         /// Returns a list containing all the dynamic text instances
         public static List<DynamicText> GetDynamicText(string text) =>
             TextRegex.Matches(text).Select(x =>
@@ -39,14 +50,10 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
 
         /// Returns a function based on cmd
         private static Func<string> GetFunc(string cmd, string param) =>
-            cmd.ToLower() switch
-            {
-                "sh" => () => ExecuteShellCommand(param),
-                "dt" => () => DateTime.Now.ToString(param),
-                "fps" => () => (1 / GameManagerScript.DeltaTime).ToString(param),
-                _ => () => $"Invalid command: {cmd}"
-            };
-
+            Functions.TryGetValue(cmd.ToLower(), out var handler)
+                ? () => handler(param)
+                : () => $"Invalid command: {cmd}";
+        
         /// Returns the interval
         private static float ?GetInterval(string interval)
         {
@@ -55,13 +62,7 @@ namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
         }
 
         /// Returns whether a command is async by default
-        private static bool GetCommandAsync(string cmd) =>
-            cmd.ToLower() switch
-            {
-                // Only explicitly define async cmd, false is returned by default
-                "sh" => true,
-                _ => false
-            };
+        private static bool GetCommandAsync(string cmd) => AsyncFunctions.TryGetValue(cmd.ToLower(), out var result) && result;
 
         /// Replaces all instances of dynamic text with proper values
         public static string ReplaceWithDynamicText(string text, Queue<DynamicText> dynamicText) =>
