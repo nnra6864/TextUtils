@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using TMPro;
 
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+#if USE_WINDOWS_DLLS && (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN)
 using System.Drawing.Text;
 using Microsoft.Win32;
 #endif
@@ -37,9 +37,10 @@ namespace NnUtils.Modules.TextUtils.Scripts
         {
 #if UNITY_STANDALONE_LINUX || UNITY_EDITOR_LINUX
             return GetFontNameLinux(fontPath);
-#elif UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+#elif USE_WINDOWS_DLLS && (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN)
             return GetFontNameWindows(fontPath);
 #endif
+            return "";
         }
 
 #if UNITY_STANDALONE_LINUX || UNITY_EDITOR_LINUX
@@ -50,14 +51,14 @@ namespace NnUtils.Modules.TextUtils.Scripts
             {
                 StartInfo = new()
                 {
-                    FileName               = "fc-query",
-                    Arguments              = $"--format=\"%{{family}}\\n\" \"{fontPath}\"",
+                    FileName = "fc-query",
+                    Arguments = $"--format=\"%{{family}}\\n\" \"{fontPath}\"",
                     RedirectStandardOutput = true,
-                    UseShellExecute        = false,
-                    CreateNoWindow         = true
+                    UseShellExecute = false,
+                    CreateNoWindow = true
                 }
             };
-            
+
             // Get the actual font name
             process.Start();
             var fontName = process.StandardOutput.ReadToEnd().Trim();
@@ -68,7 +69,7 @@ namespace NnUtils.Modules.TextUtils.Scripts
         }
 #endif
 
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+#if USE_WINDOWS_DLLS && (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN)
         private static string GetFontNameWindows(string fontPath = "")
         {
             if (!File.Exists(fontPath))
@@ -90,9 +91,10 @@ namespace NnUtils.Modules.TextUtils.Scripts
         {
 #if UNITY_STANDALONE_LINUX || UNITY_EDITOR_LINUX
             return GetFontPathLinux();
-#elif UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+#elif USE_WINDOWS_DLLS && (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN)
             return GetFontPathWindows(fontName);
 #endif
+            return "";
         }
 
 #if UNITY_STANDALONE_LINUX || UNITY_EDITOR_LINUX
@@ -107,11 +109,11 @@ namespace NnUtils.Modules.TextUtils.Scripts
             {
                 StartInfo = new()
                 {
-                    FileName               = "fc-match",
-                    Arguments              = $"-f \"%{{file}}\\n\" \"{fontName}\"",
+                    FileName = "fc-match",
+                    Arguments = $"-f \"%{{file}}\\n\" \"{fontName}\"",
                     RedirectStandardOutput = true,
-                    UseShellExecute        = false,
-                    CreateNoWindow         = true
+                    UseShellExecute = false,
+                    CreateNoWindow = true
                 }
             };
 
@@ -125,7 +127,7 @@ namespace NnUtils.Modules.TextUtils.Scripts
         }
 #endif
 
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+#if USE_WINDOWS_DLLS && (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN)
         private static string GetFontPathWindows(string fontName = "")
         {
             var systemFontDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts));
@@ -138,21 +140,21 @@ namespace NnUtils.Modules.TextUtils.Scripts
 
             // Check the registry for fonts
             using var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts");
-            
+
             // Font not found
             if (key == null) return string.Empty;
-            
+
             foreach (var font in key.GetValueNames())
             {
                 if (!font.StartsWith(fontName, StringComparison.OrdinalIgnoreCase)) continue;
-                
+
                 var value = key.GetValue(font)?.ToString();
                 if (string.IsNullOrEmpty(value)) continue;
-                
+
                 var fullPath = Path.Combine(systemFontDir, value);
                 if (File.Exists(fullPath)) return fullPath;
             }
-            
+
             // Font not found
             return string.Empty;
         }
