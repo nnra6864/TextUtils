@@ -3,7 +3,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
-namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
+namespace NnUnityTextUtils.InteractiveText
 {
     [RequireComponent(typeof(TMP_Text))]
     public class InteractiveTMPText : InteractiveTextScript

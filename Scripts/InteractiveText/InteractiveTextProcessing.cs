@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
+namespace NnUnityTextUtils.InteractiveText
 {
     public class InteractiveTextProcessing : MonoBehaviour
     {

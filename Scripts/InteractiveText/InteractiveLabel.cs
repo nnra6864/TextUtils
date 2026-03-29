@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
+namespace NnUnityTextUtils.InteractiveText
 {
     [RequireComponent(typeof(UIDocument))]
     public class InteractiveLabel : InteractiveTextScript

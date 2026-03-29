@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
+namespace NnUnityTextUtils.InteractiveText
 {
     public class InteractiveTextScript : MonoBehaviour
     {

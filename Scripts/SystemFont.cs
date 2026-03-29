@@ -9,7 +9,7 @@ using Microsoft.Win32;
 #endif
 
 
-namespace NnUtils.Modules.TextUtils.Scripts
+namespace NnUnityTextUtils
 {
     // TODO: Add Windows compatibility
     public static class SystemFont

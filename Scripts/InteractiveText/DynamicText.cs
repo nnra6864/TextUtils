@@ -1,6 +1,6 @@
 using System;
 
-namespace NnUtils.Modules.TextUtils.Scripts.InteractiveText
+namespace NnUnityTextUtils.InteractiveText
 {
     public class DynamicText
     {
