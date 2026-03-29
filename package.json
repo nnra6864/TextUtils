@@ -1,0 +1,18 @@
+{
+    "name": "com.nnra6864.nn-unity-text-utils",
+    "version": "1.0.0",
+    "displayName": "Nn Unity Text Utils",
+    "description": "Nn Unity Text Utils",
+    "keywords": [
+        "nn",
+        "text",
+        "utils"
+    ],
+    "author": {
+        "name": "nnra6864",
+        "email": "nnra2210@gmail.com",
+        "url": "https://nnra6864.github.io/nnra/"
+    }
+}
+
+
